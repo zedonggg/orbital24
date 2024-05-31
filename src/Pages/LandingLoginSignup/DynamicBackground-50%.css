@@ -1,0 +1,107 @@
+.login-page {
+  background-color: #bef0ff;
+}
+
+:root {
+  --secondary-glow: conic-gradient(
+      from 10deg at 20% 50%,
+      #f6cefc 55deg,
+      transparent 360deg
+    );
+  
+    --third-glow: conic-gradient(
+      from 90deg at 50% 50%,
+      transparent 360deg
+    );
+}
+
+.main {
+  z-index: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  height: 100vh;
+  margin: auto; /* Add this */
+}
+
+
+.mainDiv {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family:'Helvetica';
+  font-size:3rem;
+  height: 100%; 
+  width: 100%;
+}
+
+.app50 {
+    position: relative;
+    background-color: #bef0ff;
+    display: flex;
+    height: 100vh;
+    width: 50%; /* Change this */
+    overflow: hidden;
+  }
+  
+  .app50::before {
+    z-index: 0;
+    content: "";
+    position: absolute;
+    background: var(--third-glow);
+    border-radius: 50%;
+    width: 25vw; /* Change this */
+    height: 25vw; /* Change this */
+    filter:blur(90px);  
+    top: calc(50vh - 50vw/2);
+    left: calc(50vw);
+    animation: animateBefore 7s cubic-bezier(0.47, 0, 0.745, 0.715) infinite;
+  }
+  
+  .app50::after {
+    z-index: 0;
+    content: "";
+    position: absolute;
+    background: var(--secondary-glow);
+    border-radius: 50%;
+    width: 600px; /* Change this */
+    height: 600px; /* Change this */
+    filter:blur(90px);
+    top: calc(50vh - 50vw/2);
+    left: calc(50vh - 50vw/2);
+    animation: animateAfter 7s cubic-bezier(0.47, 0, 0.745, 0.715) infinite;
+  }
+
+  @keyframes animateBefore {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(100px) scale(0.9);
+  
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes animateAfter{
+    0% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(-150px) scale(1.1);
+  
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  
+  body {
+    overflow-x: hidden;
+  }
