@@ -1,9 +1,0 @@
-.shift-left {
-  transition: transform 0.8s ease-in-out;
-  transform: translateX(-25vw);
-}
-
-.shift-left-bg {
-  transition: transform 0.8s ease-in-out;
-  transform: translateX(-25vw);
-}

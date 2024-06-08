@@ -1,4 +1,5 @@
-import { initializeApp } from "firebase/app";
+import { getApps, initializeApp } from "firebase/app";
+import fb from "firebase/app"
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
@@ -11,9 +12,11 @@ const firebaseConfig = {
     measurementId: "G-GQTGMQ1LRX"
   };
 
+  const isFirebaseRunning = () => !!(getApps().length);
 // initialise firebase
-const app = initializeApp(firebaseConfig);
+// const firebase_app = initializeApp(firebaseConfig);
 
 // initialise firebase authentication
-export const auth = getAuth(app);
-export default app;
+
+let firebase_app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+export default firebase_app;
