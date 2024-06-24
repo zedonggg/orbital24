@@ -76,7 +76,7 @@ export default function Dashboard() {
   const supaQuery = async () => {
     let { data, error } = await supabase
   .rpc('onLoginSignup', {
-    user_id : uidd
+    user_id : user.uid
   })
   if (error) console.error(error)
   else console.log(data)
