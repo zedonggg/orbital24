@@ -21,6 +21,7 @@ import {
   } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useAuthContext } from '../context/AuthContext';
+import { createClient } from '@/utils/supabase/client';
 
 interface NavbarLinkProps {
     icon: typeof IconHome2;
@@ -63,30 +64,52 @@ const testdata = [
 ]
 
 export default function Dashboard() {
+  const auth = getAuth(firebase_app);
   const {user}:any = useAuthContext();
   const router = useRouter();
-  const [curUser, setUser] = useState();
+  const [curUser, setUser] = useState(null);
   let userObj : any = null;
+  const supabase = createClient();
+  let user_id : string = "null";
+  const uidd : string = "abcedfg"
+
+  const supaQuery = async () => {
+    let { data, error } = await supabase
+  .rpc('onLoginSignup', {
+    user_id : uidd
+  })
+  if (error) console.error(error)
+  else console.log(data)
+  
+  }
+  
 
   React.useEffect(() => {
     if (user == null) {
       router.push("/");
       console.log("not logged in");
     } else {
-      userObj = user;
-      setUser(curUser);
-      console.log(curUser);
+      // userObj = user;
+      setUser(user);
+      console.log(user);
+      user_id = user.id;
+      supaQuery();
     }
   }, [user]);
 
   
-  const auth = getAuth(firebase_app);
+
   // onAuthStateChanged(auth, (user) => {
   //   if (user) {
   //     setEmail(user.email)
   //     console.log(user.email);
   //   }
   // })
+
+
+
+
+
   const onSignOut = () => {
     signOut(auth).then(() => {
       console.log("successful logout!")
@@ -132,8 +155,8 @@ export default function Dashboard() {
       <AppShell.Header>
         <Group h="100%" px="md">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-          <IconAlt size={30} />
-          { curUser && (<p>{ curUser }</p>)}
+          {/* <IconAlt size={30} /> */}
+          { user != null && (<p>{ "Hello, " + user.uid }</p>)}
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">
