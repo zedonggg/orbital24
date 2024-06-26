@@ -1,8 +1,9 @@
 'use client'
-import firebase_app from '../firebase';
+import firebase_app from '../../firebase';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { AppShell, Burger, Group, Skeleton, Center, Tooltip
-    , UnstyledButton, Stack, rem, Card, Text, SimpleGrid
+    , UnstyledButton, Stack, rem, Card, Text, SimpleGrid,
+    TextInput
  } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconAlt } from '@tabler/icons-react';
@@ -20,9 +21,11 @@ import {
     IconSwitchHorizontal,
   } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
-import { useAuthContext } from '../context/AuthContext';
+import { useAuthContext } from '../../context/AuthContext';
 import { createClient } from '@/utils/supabase/client';
 import Link from 'next/link';
+import { useForm } from '@mantine/form';
+import { Button } from '@mantine/core';
 
 interface NavbarLinkProps {
     icon: typeof IconHome2;
@@ -47,84 +50,38 @@ const mockdata = [
     { icon: IconSettings, label: 'Settings' },
 ];
 
-const testdata = [
-    { name: 'subject1', progress: 80 },
-    { name: 'subject2', progress: 69 },
-    // { name: 'subject3', progress: 70 },
-    // { name: 'subject4', progress: 55 },
-    // { name: 'subject4', progress: 55 },
-    // { name: 'subject4', progress: 55 },
-    // { name: 'subject4', progress: 55 },
-    // { name: 'subject4', progress: 55 },
-    // { name: 'subject4', progress: 55 },
-    // { name: 'subject4', progress: 55 },
-    // { name: 'subject4', progress: 55 },
-    // { name: 'subject4', progress: 55 },
-    // { name: 'subject4', progress: 55 },
-    // { name: 'subject4', progress: 55 },
-]
+export default function AddCourse() {
+    const auth = getAuth(firebase_app);
+    const [userId, setUserId] = useState("");
+    const router = useRouter();
+    const supabase = createClient();
 
-export default function Dashboard() {
-  const auth = getAuth(firebase_app);
-  const {user}:any = useAuthContext();
-  const router = useRouter();
-  const [curUser, setUser] = useState(null);
-  let userObj : any = null;
-  const supabase = createClient();
-  let user_id : string = "null";
-  const uidd : string = "abcedfg"
-  const [courses, setCourses] = useState<any[] | null>();
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            setUserId(user.uid);
+            console.log("user logged in! yipee!");
+        } else { 
+            setUserId('');
+            router.push("/");
+            console.log("No user found");
+        }
+    });
 
-  const supaQuery = async () => {
-    let { data, error } = await supabase
-  .rpc('onLoginSignup', {
-    user_id : user.uid
-  })
-  if (error) console.error(error)
-  else console.log(data)
-  
-  }
+    const addNewCourse = async (x:any) => {     
+        let { data, error } = await supabase
+        .rpc('addNewCourse', {
+        coursecolor: randomColor(colorWheel), 
+        coursename: x.name, 
+        user_id: userId
+        })
+        if (error) console.error(error)
+        else {
+            console.log('success');
+            router.push('/dashboard')
+        }
 
-  const fetchCourses = async (x : any) => {
-    
-    let { data, error } = await supabase
-    .from('courses')
-    .select()
-    .eq('uid', x.uid)
-    if (error) console.error(error)
-    else {
-      setCourses(data);
-      console.log(data);
-    };
-  }
-  
 
-  React.useEffect(() => {
-    if (user == null) {
-      router.push("/");
-      console.log("not logged in");
-    } else {
-      // userObj = user;
-      setUser(user);
-      console.log(user);
-      user_id = user.id;
-      supaQuery();
-      fetchCourses(user);
     }
-  }, [user]);
-
-  
-
-  // onAuthStateChanged(auth, (user) => {
-  //   if (user) {
-  //     setEmail(user.email)
-  //     console.log(user.email);
-  //   }
-  // })
-
-
-
-
 
   const onSignOut = () => {
     signOut(auth).then(() => {
@@ -136,7 +93,6 @@ export default function Dashboard() {
   }
 
   const [opened, { toggle }] = useDisclosure();
-
   const [active, setActive] = useState(0);
 
   const colorWheel = ['#FAD6A6', '#590FB7', '#9055FF', '#13E2DA', '#D6FF7F', '#30BE96']
@@ -155,19 +111,12 @@ export default function Dashboard() {
     />
   ));
 
-  const cards = courses != null && courses.map((x, index) => (
-    <Card {...x}
-        padding={'md'}
-    >
-        <Card.Section h={160} style={{ backgroundColor: `${x.course_color}`}}>
-        </Card.Section>
-
-        <Text fw={500} size='lg' mt='md'>
-            <Link href={`/dashboard/${x.course_id}`}>{x.course_name}</Link>
-        </Text>
-    </Card>
-  ));
-  
+  const courseForm = useForm({
+    mode:'uncontrolled',
+    initialValues: {
+        name: ''
+    }
+  })
 
   return (
     <AppShell
@@ -179,7 +128,7 @@ export default function Dashboard() {
         <Group h="100%" px="md">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
           {/* <IconAlt size={30} /> */}
-          { user != null && (<p>{ "Hello, " + user.uid }</p>)}
+          { userId != null && (<p>{ "Hello, " + userId }</p>)}
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">
@@ -194,20 +143,19 @@ export default function Dashboard() {
       </Stack>
       </AppShell.Navbar>
       <AppShell.Main>
-        <SimpleGrid cols={{ base: 1, sm: 2, lg: 3}}>
-            {cards}
-            <Card
-        padding={'md'}
-    >
-        <Card.Section h={160}>
-          <Skeleton visible={true} h={160}></Skeleton>
-        </Card.Section>
-
-        <Text fw={500} size='lg' mt='md'>
-            <Link href="/dashboard/addcourse">Add a new course</Link>
-        </Text>
-    </Card>
-        </SimpleGrid>
+        <Center>
+            {/* <p>Add a new course</p> */}
+            <form onSubmit={courseForm.onSubmit((val) => addNewCourse(val))}>
+                <TextInput size='md'
+                    label="Course Name"
+                    key={courseForm.key('name')}
+                    {...courseForm.getInputProps('name')}
+                />
+                <Button justify="center" mt="md" type="submit" color="rgba(209, 107, 206, 1)" style={{ transition: '400ms all ease-in-out'}}>
+                    Add Course
+                </Button>
+            </form>
+        </Center>
       </AppShell.Main>
     </AppShell>
   );
