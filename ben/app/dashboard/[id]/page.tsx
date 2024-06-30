@@ -253,7 +253,7 @@ export default function AddCourse({ params }: { params: {id: string}}) {
               </Grid.Col>
               <Grid.Col span={8}>
                 <Paper>
-                        { summaries != null && activeSummary != null && activeSummary >= 0 && (<Text><ReactMarkdown children={summaries[activeSummary].text} /></Text>)}
+                        { summaries != null && activeSummary != null && activeSummary >= 0 && (<Text><ReactMarkdown>{summaries[activeSummary].text}</ReactMarkdown></Text>)}
                         
                 </Paper>
               </Grid.Col>
