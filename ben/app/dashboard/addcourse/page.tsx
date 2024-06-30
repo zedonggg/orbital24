@@ -107,7 +107,7 @@ export default function AddCourse() {
       {...link}
       key={link.label}
       active={index === active}
-      onClick={() => setActive(index)}
+      onClick={() => {setActive(index); router.push('/dashboard')}}
     />
   ));
 
