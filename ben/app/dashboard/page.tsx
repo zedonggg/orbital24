@@ -151,13 +151,14 @@ export default function Dashboard() {
       {...link}
       key={link.label}
       active={index === active}
-      onClick={() => setActive(index)}
+      onClick={() => {setActive(index); router.push('/dashboard')}}
     />
   ));
 
   const cards = courses != null && courses.map((x, index) => (
     <Card {...x}
         padding={'md'}
+        key={index}
     >
         <Card.Section h={160} style={{ backgroundColor: `${x.course_color}`}}>
         </Card.Section>
