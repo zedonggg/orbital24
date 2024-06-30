@@ -30,7 +30,8 @@
     "react": "^18",
     "react-dom": "^18",
     "react-markdown": "^9.0.1",
-    "supabase": "^1.176.10"
+    "supabase": "^1.176.10",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",

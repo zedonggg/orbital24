@@ -23,7 +23,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { useAuthContext } from '../context/AuthContext';
 import { createClient } from '@/utils/supabase/client';
-import { uuid } from 'uuidv4';
+// import { v4 as uuidv4 } from 'uuid';
 import { useEffect } from 'react';
 
 export default function Upload() {
@@ -58,7 +58,7 @@ export default function Upload() {
         const { data, error } = await supabase
             .storage
             .from('courseMedia')
-            .upload(userId + "/" + uuid(), file)
+            .upload(userId + "/" , file)
             console.log('yipee! uploaded!');
     
         if (data) {
