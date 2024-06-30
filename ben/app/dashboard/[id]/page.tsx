@@ -155,6 +155,7 @@ export default function AddCourse({ params }: { params: {id: string}}) {
     }
   })
 
+    const [file, setFile] = useState(null);
     const [summarisedText, setSummarisedText] = useState('');
     const [textName, setTextName] = useState('');
     const [quizText, setQuizText] = useState('');
@@ -171,6 +172,7 @@ export default function AddCourse({ params }: { params: {id: string}}) {
 
     const onFileUploadAndRun = async () => {
         setLoading(true);
+        alert("file uploading!");
         const data = new FormData();
         data.append('file', file);
         const config = {
@@ -206,6 +208,7 @@ export default function AddCourse({ params }: { params: {id: string}}) {
           console.log(text);
           setSummarisedText(text);
           addSummary(textName, text);
+          router.refresh();
 
 
         } catch (error) {
