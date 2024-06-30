@@ -208,7 +208,8 @@ export default function AddCourse({ params }: { params: {id: string}}) {
           console.log(text);
           setSummarisedText(text);
           addSummary(textName, text);
-          router.refresh();
+          alert("successfully uploaded! refresh to see changes")
+          router.push("/dashboard/" + params.id);
 
 
         } catch (error) {
