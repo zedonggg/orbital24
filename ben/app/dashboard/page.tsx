@@ -18,6 +18,7 @@ import {
     IconSettings,
     IconLogout,
     IconSwitchHorizontal,
+    IconNotebook
   } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useAuthContext } from '../context/AuthContext';
@@ -25,26 +26,30 @@ import { createClient } from '@/utils/supabase/client';
 import Link from 'next/link';
 
 interface NavbarLinkProps {
-    icon: typeof IconHome2;
-    label: string;
-    active?: boolean;
-    onClick?(): void;
-  }
-  
-function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
-    return (
-      <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
+  icon: typeof IconHome2;
+  label: string;
+  href: string;  
+  active: boolean;
+  onClick?(): void;
+}
+
+function NavbarLink({ icon: Icon, label, href, active, onClick}: NavbarLinkProps) {
+  return (
+    <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
+      <Link href={href}>
         <UnstyledButton onClick={onClick} className={classes.link} data-active={active || undefined}>
           <Icon style={{ width: rem(20), height: rem(20) }} stroke={1.5} />
         </UnstyledButton>
-      </Tooltip>
-    );
+      </Link>
+    </Tooltip>
+  );
 }
   
 const mockdata = [
-    { icon: IconGauge, label: 'Dashboard' },
-    { icon: IconUser, label: 'Account' },
-    { icon: IconSettings, label: 'Settings' },
+  { icon: IconGauge, label: 'Dashboard', href: '/dashboard', active: true},
+  { icon: IconNotebook, label: 'Quizzes', href: '/quiz', active: false},
+  { icon: IconUser, label: 'Account', href: '/profile', active: false},
+  { icon: IconSettings, label: 'Settings', href: '/dashboard', active: false},
 ];
 
 const testdata = [
@@ -151,7 +156,7 @@ export default function Dashboard() {
       {...link}
       key={link.label}
       active={index === active}
-      onClick={() => {setActive(index); router.push('/dashboard')}}
+      onClick={() => {setActive(index)}}
     />
   ));
 
@@ -191,7 +196,7 @@ export default function Dashboard() {
       </div>
 
       <Stack justify="center" gap={0}>
-        <NavbarLink icon={IconLogout} label="Logout" onClick={onSignOut} />
+        <NavbarLink icon={IconLogout} label="Logout" onClick={onSignOut} href={'/profile'} />
       </Stack>
       </AppShell.Navbar>
       <AppShell.Main>
