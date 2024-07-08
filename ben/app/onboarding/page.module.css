@@ -1,0 +1,69 @@
+.introstack h1 {
+    margin: 0;
+    font-size: 60px;
+    font-family: "Inter", sans-serif;
+}
+
+.introstack #hello {
+    animation: slide_down 1s ease;
+    color: #d16bce;
+    text-align: center;
+}
+
+.introstack #question {
+    color: transparent;
+    animation: slide_down_normal 1s ease 1s;
+    animation-fill-mode: forwards;
+    text-align: center;
+}
+
+.namebox {
+    opacity: 0;
+    transition: 400ms all ease-in-out;
+    animation: appear 2s ease 1.5s;
+    animation-fill-mode: forwards;
+    margin-top: 1rem;
+    text-align: center !important;
+}
+
+.gobtn {
+    opacity: 0;
+    animation: appear 2s ease 1.5s;
+    animation-fill-mode: forwards;
+}
+
+.namebox::placeholder {
+    text-align: center !important;
+}
+
+
+@keyframes slide_down {
+    0% {
+        transform: translateY(-100%);
+        color: transparent;
+    }
+    100% {
+        transform: translateY(0);
+        color: #d16bce;
+    }
+}
+
+@keyframes slide_down_normal {
+    0% {
+        transform: translateY(-100%);
+        color: transparent;
+    }
+    100% {
+        transform: translateY(0);
+        color: white;
+    }
+}
+
+@keyframes appear {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
