@@ -5,19 +5,14 @@ import { AppShell, Burger, Group, Skeleton, Center, Tooltip
     , UnstyledButton, Stack, rem, Card, Text, SimpleGrid
  } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconAlt } from '@tabler/icons-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classes from './page.module.css';
 import {
     IconHome2,
     IconGauge,
-    IconDeviceDesktopAnalytics,
-    IconFingerprint,
-    IconCalendarStats,
     IconUser,
     IconSettings,
     IconLogout,
-    IconSwitchHorizontal,
     IconNotebook
   } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
@@ -52,84 +47,84 @@ const mockdata = [
   { icon: IconSettings, label: 'Settings', href: '/dashboard', active: false},
 ];
 
-const testdata = [
-    { name: 'subject1', progress: 80 },
-    { name: 'subject2', progress: 69 },
-    // { name: 'subject3', progress: 70 },
-    // { name: 'subject4', progress: 55 },
-    // { name: 'subject4', progress: 55 },
-    // { name: 'subject4', progress: 55 },
-    // { name: 'subject4', progress: 55 },
-    // { name: 'subject4', progress: 55 },
-    // { name: 'subject4', progress: 55 },
-    // { name: 'subject4', progress: 55 },
-    // { name: 'subject4', progress: 55 },
-    // { name: 'subject4', progress: 55 },
-    // { name: 'subject4', progress: 55 },
-    // { name: 'subject4', progress: 55 },
-]
-
 export default function Dashboard() {
   const auth = getAuth(firebase_app);
-  const {user}:any = useAuthContext();
   const router = useRouter();
-  const [curUser, setUser] = useState(null);
-  let userObj : any = null;
+  const [curUser, setUser] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const supabase = createClient();
-  let user_id : string = "null";
-  const uidd : string = "abcedfg"
   const [courses, setCourses] = useState<any[] | null>();
 
-  const supaQuery = async () => {
-    let { data, error } = await supabase
-  .rpc('onLoginSignup', {
-    user_id : user.uid
-  })
-  if (error) console.error(error)
-  else console.log(data)
+  const supaQuery = async (x:string) => {
+
+      let { data, error } = await supabase
+    .rpc('onLoginSignup', {
+      user_id : x
+    })
+    if (error) console.error(error)
+    else console.log(data)
   
   }
 
-  const fetchCourses = async (x : any) => {
+  const fetchCourses = async (x : string) => {
     
     let { data, error } = await supabase
     .from('courses')
     .select()
-    .eq('uid', x.uid)
+    .eq('uid', x)
     if (error) console.error(error)
     else {
       setCourses(data);
       console.log(data);
     };
+
   }
-  
 
-  React.useEffect(() => {
-    if (user == null) {
-      router.push("/");
-      console.log("not logged in");
-    } else {
-      // userObj = user;
-      setUser(user);
-      console.log(user);
-      user_id = user.id;
-      supaQuery();
-      fetchCourses(user);
+  const getName = async (x:string) => {
+        
+    let { data, error } = await supabase
+    .rpc('fetchDisplayName', {
+    user_id : x
+    })
+    if (error) console.error(error)
+    else {
+      if (data.length == 0) {
+        router.push("/onboarding");
+      } else {
+        setDisplayName(data);
+      }
     }
-  }, [user]);
 
-  
+}
 
-  // onAuthStateChanged(auth, (user) => {
-  //   if (user) {
-  //     setEmail(user.email)
-  //     console.log(user.email);
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        getName(user.uid);
+        setUser(user.uid);
+        console.log("user logged in! yipee!");
+        supaQuery(user.uid);
+        fetchCourses(user.uid);
+      } else { 
+          console.log("No user found");
+          router.push("/"); 
+      }
+  });
+  }, []);
+
+  // React.useEffect(() => {
+  //   if (user == null) {
+  //     router.push("/");
+  //     console.log("not logged in");
+  //   } else {
+  //     // userObj = user;
+  //     setUser(user);
+  //     console.log(user);
+  //     user_id = user.id;
+  //     supaQuery();
+  //     fetchCourses(user);
   //   }
-  // })
-
-
-
-
+  // }, [user]);
 
   const onSignOut = () => {
     signOut(auth).then(() => {
@@ -185,7 +180,7 @@ export default function Dashboard() {
         <Group h="100%" px="md">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
           {/* <IconAlt size={30} /> */}
-          { user != null && (<p>{ "Hello, " + user.uid }</p>)}
+          {(<p>{ "Hello, " + displayName }</p>)}
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">
@@ -196,7 +191,7 @@ export default function Dashboard() {
       </div>
 
       <Stack justify="center" gap={0}>
-        <NavbarLink icon={IconLogout} label="Logout" onClick={onSignOut} href={'/profile'} />
+        <NavbarLink active={false} icon={IconLogout} label="Logout" onClick={onSignOut} href={'/profile'} />
       </Stack>
       </AppShell.Navbar>
       <AppShell.Main>
