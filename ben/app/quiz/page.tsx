@@ -105,7 +105,25 @@ export default function AddQuiz() {
     const [courses, setCourses] = useState<any[]>([]);
     const [quizzes, setQuizzes] = useState<any[]>([]);
     const [generated_quiz, setGeneratedQuiz] = useState(null);
+    const [displayName, setDisplayName] = useState("");
 
+
+    const getName = async (x:string) => {
+        
+      let { data, error } = await supabase
+      .rpc('fetchDisplayName', {
+      user_id : x
+      })
+      if (error) console.error(error)
+      else {
+        if (data.length == 0) {
+          router.push("/onboarding");
+        } else {
+          setDisplayName(data);
+        }
+      }
+  
+  }
 
     function showModal() {
         setIsModalVisible(true);
@@ -165,6 +183,7 @@ export default function AddQuiz() {
         if (user) {
             setUserId(user.uid);
             console.log("user logged in! yipee!");
+            getName(user.uid);
             fetchSummaries(user);
             fetchCourses(user);
             fetchQuizzes(user);
@@ -314,7 +333,7 @@ export default function AddQuiz() {
         <Group h="100%" px="md">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
           {/* <IconAlt size={30} /> */}
-          { userId != null && (<p>{ "Hello, " + userId }</p>)}
+          { userId != null && (<p>{ "Hello, " + displayName }</p>)}
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">

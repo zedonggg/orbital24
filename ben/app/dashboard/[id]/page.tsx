@@ -243,7 +243,7 @@ export default function AddCourse({ params }: { params: {id: string}}) {
       </div>
 
       <Stack justify="center" gap={0}>
-        <NavbarLink icon={IconLogout} label="Logout" onClick={onSignOut} href={'/profile'} />
+        <NavbarLink icon={IconLogout} label="Logout" onClick={onSignOut} href="#" />
       </Stack>
       </AppShell.Navbar>
       <AppShell.Main>

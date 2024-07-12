@@ -3,7 +3,7 @@ import fb from "firebase/app"
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAUORJKoiUJnzlSOXDHRGkjefSVRQSRFKo",
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
     authDomain: "orbital-ben.firebaseapp.com",
     projectId: "orbital-ben",
     storageBucket: "orbital-ben.appspot.com",
