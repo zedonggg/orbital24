@@ -6,12 +6,12 @@ import fs from 'fs-extra';
 import path from 'path';
 import os from 'os';
 
-export const config = {
-  api: {
-    bodyParser: false,
-    responseLimit: '100mb',
-  },
-};
+// export const config = {
+//   api: {
+//     bodyParser: false,
+//     responseLimit: '100mb',
+//   },
+// };
 
 const groq = new Groq({ apiKey: "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"
     , dangerouslyAllowBrowser: true
