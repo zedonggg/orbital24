@@ -18,6 +18,8 @@ const groq = new Groq({ apiKey: "gsk_rIOjPsOdr9qb3VCWLdGLWGdyb3FYYURriQd0N7p74dn
     , dangerouslyAllowBrowser: true
 })
 
+export const maxDuration = 60;
+
 // const upload = multer();
 
 // function runMiddleware(req, res, fn) {
