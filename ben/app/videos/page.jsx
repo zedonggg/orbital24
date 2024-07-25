@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import { FFmpeg } from '@ffmpeg/ffmpeg';
 import { fetchFile, toBlobURL } from '@ffmpeg/util';
+import { createClient } from '@/utils/supabase/client';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Home() {
   const [ffmpeg, setFfmpeg] = useState(null);
@@ -10,6 +12,7 @@ export default function Home() {
   const [convertedFile, setConvertedFile] = useState(null);
   const [transcription, setTranscription] = useState('');
   const [loading, setLoading] = useState(false);
+  const supabase = createClient();
 
   useEffect(() => {
     loadFFmpeg();
@@ -54,12 +57,25 @@ export default function Home() {
 
     setLoading(true);
     try {
-      const formData = new FormData();
-      formData.append('file', audioFile);
+      const fileName = `tmp_${uuidv4()}.mp3`;
+      const {data, error} = await supabase.storage
+        .from('audio_files')
+        .upload(fileName, audioFile);
+      
+      if (error) throw error;
+
+      const fileurl = "https://cvumoldykbzywcazohmd.supabase.co/storage/v1/object/public/audio_files/" + fileName;
+
+      console.log(fileurl);
+      // const formData = new FormData();
+      // formData.append('file', audioFile);
 
       const response = await fetch('/api', {
         method: 'POST',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({fileUrl: fileurl, fileName: fileName}),
       });
 
       if (response.ok) {
