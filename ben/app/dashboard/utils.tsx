@@ -19,7 +19,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthContext } from '../context/AuthContext';
 import { createClient } from '@/utils/supabase/client';
 import Link from 'next/link';
-
+import { useMantineTheme } from '@mantine/core';
 
 
 export default function NavLayout({ mainContent, displayName, activeIndex} : { 
@@ -82,13 +82,13 @@ export default function NavLayout({ mainContent, displayName, activeIndex} : {
               navbar={{ width: 80, breakpoint: 'sm', collapsed: { mobile: !opened } }}
               padding="md"
             >
-              <AppShell.Header>
+              <AppShell.Header style={{ border: "none"}}>
                 <Group h="100%" px="md">
                   <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-                  {(<p>{ "Hello, " + displayName }</p>)}
+                  {(<p>Hello, <span style={{ color: "rgba(209, 107, 206, 1)"}}>{displayName}</span></p>)}
                 </Group>
               </AppShell.Header>
-              <AppShell.Navbar p="md">
+              <AppShell.Navbar p="md" style={{ border: "none"}} >
               <div className={classes.navbarMain}>
                 <Stack justify="top" gap={0}>
                   {links}
@@ -98,7 +98,7 @@ export default function NavLayout({ mainContent, displayName, activeIndex} : {
               <Stack justify="center" gap={0}>
                 <NavbarLink active={false} icon={IconLogout} label="Logout" onClick={onSignOut} href='#' />
               </Stack>
-              </AppShell.Navbar>
+              </AppShell.Navbar >
               { mainContent }
             </AppShell> )
     }

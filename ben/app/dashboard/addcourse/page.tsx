@@ -3,7 +3,9 @@ import firebase_app from '../../firebase';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { AppShell, Burger, Group, Skeleton, Center, Tooltip
     , UnstyledButton, Stack, rem, Card, Text, SimpleGrid,
-    TextInput
+    TextInput,
+    Paper,
+    ColorPicker
  } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconAlt } from '@tabler/icons-react';
@@ -72,10 +74,11 @@ export default function AddCourse() {
         }
     });
 
-    const addNewCourse = async (x:any) => {     
+    const addNewCourse = async (x:any) => {    
+      if (x.name.length > 0) { 
         let { data, error } = await supabase
         .rpc('addNewCourse', {
-        coursecolor: randomColor(colorWheel), 
+        coursecolor: defaultcolor, 
         coursename: x.name, 
         user_id: userId
         })
@@ -83,7 +86,7 @@ export default function AddCourse() {
         else {
             console.log('success');
             router.push('/dashboard')
-        }
+        } } else {}
 
 
     }
@@ -123,20 +126,22 @@ export default function AddCourse() {
     }
   })
 
+  const [defaultcolor, changeColor] = useState('ffffff');
+
   return (
     <AppShell
       header={{ height: 60 }}
       navbar={{ width: 80, breakpoint: 'sm', collapsed: { mobile: !opened } }}
       padding="md"
     >
-      <AppShell.Header>
+      <AppShell.Header style={{ border: "none"}}>
         <Group h="100%" px="md">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
           {/* <IconAlt size={30} /> */}
           { userId != null && (<p>{ "Hello, " + userId }</p>)}
         </Group>
       </AppShell.Header>
-      <AppShell.Navbar p="md">
+      <AppShell.Navbar p="md" style={{ border: 'none'}}>
       <div className={classes.navbarMain}>
         <Stack justify="top" gap={0}>
           {links}
@@ -144,22 +149,26 @@ export default function AddCourse() {
       </div>
 
       <Stack justify="center" gap={0}>
-        <NavbarLink icon={IconLogout} label="Logout" onClick={onSignOut} href={'/profile'} />
+        <NavbarLink icon={IconLogout} label="Logout" onClick={onSignOut} href={'#'} active={false} />
       </Stack>
       </AppShell.Navbar>
-      <AppShell.Main>
+      <AppShell.Main style={{ background: "#3B3B3B"}}>
         <Center>
-            {/* <p>Add a new course</p> */}
+          <Paper style={{ padding: '30px', background: '#2E2E2E'}}>
+            <h2 style={{ marginTop: "0"}}>Add a new course</h2>
             <form onSubmit={courseForm.onSubmit((val) => addNewCourse(val))}>
                 <TextInput size='md'
                     label="Course Name"
                     key={courseForm.key('name')}
                     {...courseForm.getInputProps('name')}
                 />
+                <ColorPicker mt="md" value={defaultcolor} onChange={changeColor}
+                swatches={['#2e2e2e', '#868e96', '#fa5252', '#e64980', '#be4bdb', '#7950f2', '#4c6ef5', '#228be6', '#15aabf', '#12b886', '#40c057', '#82c91e', '#fab005', '#fd7e14']} />
                 <Button justify="center" mt="md" type="submit" color="rgba(209, 107, 206, 1)" style={{ transition: '400ms all ease-in-out'}}>
                     Add Course
                 </Button>
             </form>
+            </Paper>
         </Center>
       </AppShell.Main>
     </AppShell>

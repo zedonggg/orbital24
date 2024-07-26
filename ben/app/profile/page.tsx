@@ -75,8 +75,8 @@ export default function Profile() {
     
 
     const MainDisplay = () => {
-        return (<AppShell.Main>
-            <h1 style={{ marginBlock: 'auto'}}>Profile</h1>
+        return (<AppShell.Main style={{ background: "#3B3B3B"}}>
+            <h2 style={{ margin: 'auto'}}>Your Account</h2>
             <p><span>Name</span><br></br>{isEdit? <Input placeholder="Enter your new name" value={newName} style={{ maxWidth: '300px'}}
             onChange={(e) => setNewName(e.currentTarget.value)} autoFocus color="#d16bce"
             rightSection={<span className={styles.editBtn}style={{ display: 'flex'}}><IconPencil onClick={() => setNameOnClick(userId, newName) }/></span>} 

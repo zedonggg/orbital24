@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import Link from 'next/link';
 import NavLayout from './utils';
+import styles from './page.module.css'
 
 export default function Dashboard() {
   const auth = getAuth(firebase_app);
@@ -77,34 +78,35 @@ export default function Dashboard() {
   });
   }, []);
 
-  const colorWheel = ['#FAD6A6', '#590FB7', '#9055FF', '#13E2DA', '#D6FF7F', '#30BE96']
-
-  const randomColor = (x: string[]) => {
-    const n = x.length;
-    const randNum = Math.floor(Math.random() * n);
-    return x[randNum];
-  }
-
   const cards = courses != null && courses.map((x, index) => (
     <Card {...x}
         padding={'md'}
         key={index}
+        shadow='sm'
+        className={styles.contentcard}
+        bg="#2E2E2E"
     >
         <Card.Section h={160} style={{ backgroundColor: `${x.course_color}`}}>
         </Card.Section>
 
         <Text fw={500} size='lg' mt='md'>
-            <Link href={`/dashboard/${x.course_id}`}>{x.course_name}</Link>
+            <Link href={`/dashboard/${x.course_id}`} color={x.course_color}>{x.course_name}</Link>
         </Text>
     </Card>
   ));
 
+  const numCourses = `You have ${cards ? cards.length : 'no'} ${cards ? cards.length == 1 ? 'course' : 'courses' : 'courses'}`;
+
   const MainLayout = () => {
-    return (<AppShell.Main>
-        <SimpleGrid cols={{ base: 1, sm: 2, lg: 3}}>
+    return (<AppShell.Main style={{ background: "#3B3B3B"}}>
+      <h2 style={{ margin: 'auto'}}>{numCourses}</h2>
+        <SimpleGrid cols={{ base: 1, sm: 2, lg: 3}} mt="md">
             {cards}
             <Card
         padding={'md'}
+        shadow='sm'
+        className={styles.contentcard}
+        bg="#2E2E2E"
     >
         <Card.Section h={160}>
           <Skeleton visible={true} h={160}></Skeleton>

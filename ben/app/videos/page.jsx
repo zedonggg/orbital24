@@ -36,6 +36,8 @@ export default function Home() {
   };
 
   const handleConvert = async () => {
+    console.log(videoFile);
+    console.log(ffmpeg);
     if (!videoFile || !ffmpeg) return;
 
     setLoading(true);
