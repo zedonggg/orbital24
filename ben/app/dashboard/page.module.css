@@ -32,3 +32,25 @@
       }
     }
   }
+
+  .contentcard {
+    transition: 200ms all ease-in-out;
+  }
+
+  .contentcard a {
+    text-decoration: none !important;
+    color: "#C9C9C9" !important;
+  }
+
+  .contentcard a:link {
+    color: #C9C9C9 !important;
+  }
+
+  .contentcard a:visited {
+    color: #C9C9C9;
+  }
+
+  .contentcard:hover {
+    transform: scale(1.02);
+    transition: 200ms all ease-in-out;
+  }
