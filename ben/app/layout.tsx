@@ -5,7 +5,7 @@ import "./globals.css";
 import '@mantine/core/styles.css'
 import { AuthContextProvider } from './context/AuthContext' 
 import '@mantine/dropzone/styles.css';
-import { ColorSchemeScript, MantineProvider } from "@mantine/core";
+import { ColorSchemeScript, createTheme, MantineProvider } from "@mantine/core";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: "Ben",
   description: "Machine Learning Study Assistant",
 };
+
 
 export default function RootLayout({
   children,
