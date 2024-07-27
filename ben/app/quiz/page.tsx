@@ -332,7 +332,7 @@ export default function AddQuiz() {
         <Group h="100%" px="md">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
           {/* <IconAlt size={30} /> */}
-          { userId != null && (<p>{ "Hello, " + displayName }</p>)}
+          {(<p>Hello, <span style={{ color: "rgba(209, 107, 206, 1)"}}>{displayName}</span></p>)}
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">

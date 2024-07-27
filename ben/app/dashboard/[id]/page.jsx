@@ -174,10 +174,12 @@ export default function AddCourse({ params }) {
       const data = await ffmpeg.readFile('output.mp3');
       const blob = new Blob([data.buffer], { type: 'audio/mp3' });
       setConvertedFile(URL.createObjectURL(blob));
+      setLoading(false);
     } catch (error) {
       console.error('Conversion error:', error);
+      setLoading(false);
     }
-    setLoading(false);
+    
   };
 
   const handleTranscribe = async () => {
@@ -267,6 +269,19 @@ export default function AddCourse({ params }) {
 
         if (error || data.length == 0) router.push('/dashboard')
         else console.log(data);
+    }
+
+    const [ailoading, setAiloading] = useState(false);
+    const addAISummary = async (id, words) => {
+      setAiloading(true);
+      let { data, error } = await supabase
+      .rpc('updateAI', {
+        ai_text : words, 
+        userid : id
+      })
+      if (error) console.error(error)
+      else setAiloading(false);
+
     }
 
     const getTexts = async (x) => {
@@ -521,19 +536,21 @@ export default function AddCourse({ params }) {
               <Grid.Col span={9}>
                 <Paper>
                         { summaries != null && activeSummary != null && activeSummary >= 0 && (summaries[activeSummary].is_transcription ? (
-                          <Paper>
+                          <Paper style={{ padding: '25px'}}>
                             <Group>
                               <Button variant="gradient"
       gradient={{ from: 'indigo', to: '#d16bce', deg: 90 }} disabled={buttonDisable} onClick={() => processTranscript(summaries[activeSummary].text)}>Click to Summarize your Transcript</Button>
+                              <Button variant="gradient"
+      gradient={{ from: 'indigo', to: '#d16bce', deg: 90 }} disabled={ailoading} onClick={() => addAISummary(summaries[activeSummary].id, aisummary)}>Click to save your summary</Button>
                               <Text>{aisummary}</Text>
-                              {summaries[activeSummary].ai_summary}
+                              {summaries[activeSummary].ai_summary != null && (<Group><h2>Your Current Summary:</h2>{summaries[activeSummary].ai_summary}</Group>)}
                             </Group>
                             <Group>
-                              <h2>Your transcription:</h2>
-                              <p>{summaries[activeSummary].text}</p>
+                              <h2 style={{ marginBottom: '0'}}>Your transcription:</h2>
+                              <p style={{ marginTop: '0'}}>{summaries[activeSummary].text}</p>
                             </Group>
                           </Paper>
-                        ) : (<Text><ReactMarkdown>{summaries[activeSummary].text}</ReactMarkdown></Text>))}      
+                        ) : (<Text style={{ padding: '25px'}}><ReactMarkdown>{summaries[activeSummary].text}</ReactMarkdown></Text>))}      
                 </Paper>
               </Grid.Col>
             </Grid>
