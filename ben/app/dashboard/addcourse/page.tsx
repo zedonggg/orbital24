@@ -54,18 +54,36 @@ const mockdata = [
   { icon: IconGauge, label: 'Dashboard', href: '/dashboard', active: true},
   { icon: IconNotebook, label: 'Quizzes', href: '/quiz', active: false},
   { icon: IconUser, label: 'Account', href: '/profile', active: false},
-  { icon: IconSettings, label: 'Settings', href: '/dashboard', active: false},
 ];
 
 export default function AddCourse() {
+  const [displayName, setDisplayName] = useState("");
     const auth = getAuth(firebase_app);
     const [userId, setUserId] = useState("");
     const router = useRouter();
     const supabase = createClient();
 
+    const getName = async (x:any) => {
+        
+      let { data, error } = await supabase
+      .rpc('fetchDisplayName', {
+      user_id : x
+      })
+      if (error) console.error(error)
+      else {
+        if (data == null || data.length == 0) {
+          router.push("/onboarding");
+        } else {
+          setDisplayName(data);
+        }
+      }
+  
+  }
+
     onAuthStateChanged(auth, (user) => {
         if (user) {
             setUserId(user.uid);
+            getName(user.uid);
             console.log("user logged in! yipee!");
         } else { 
             setUserId('');
@@ -73,6 +91,7 @@ export default function AddCourse() {
             console.log("No user found");
         }
     });
+
 
     const addNewCourse = async (x:any) => {    
       if (x.name.length > 0) { 
@@ -138,7 +157,7 @@ export default function AddCourse() {
         <Group h="100%" px="md">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
           {/* <IconAlt size={30} /> */}
-          { userId != null && (<p>{ "Hello, " + userId }</p>)}
+          {(<p>Hello, <span style={{ color: "rgba(209, 107, 206, 1)"}}>{displayName}</span></p>)}
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md" style={{ border: 'none'}}>
